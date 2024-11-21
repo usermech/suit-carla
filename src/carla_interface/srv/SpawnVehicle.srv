@@ -1,0 +1,4 @@
+string vehicle_type  # Type of the vehicle to spawn (e.g., firetruck, ambulance)
+---
+bool success         # Indication of success
+string message       # A message indicating the result
