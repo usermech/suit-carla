@@ -5,6 +5,18 @@ Add to the dockerfile the following:
 - Install ROS2 Foxy following the instructions from the [official website](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html)
 - Create a workspace from this repository and install the dependencies.
 
+## CARLA senkronizasyonu başlatma
+
+CARLA simülasyon ortamını başlatmak için aşağıdaki komutu çalıştırabilirsiniz:
+
+```bash
+ros2 run carla_runner carla_run --host xxx.xxx.xxx.xxx
+```
+
+Burada `xxx.xxx.xxx.xxx`, CARLA serverinin IP adresidir. Eğer `--host` parametresi belirtilmezse, varsayılan olarak `localhost` kullanılır. Bu durumda CARLA simülasyonu ve ROS2 aynı bilgisayarda çalışıyor olmalıdır.
+
+Bu node çalıştığı zaman CARLA server zamanının kontrolünden sorumludur. Aynı zamanda trafik menajerini de başlatır. Böylece simülasyon ortamına farklı aktörler veya sensörler eklendiğinde veya çıkarıldığında simülasyon ortamı senkronize bir şekilde çalışmaya devam eder. Bu node'u diğer node'lar çalışmadan önce başlatmanız tavsiye edilir.
+
 ## Simülasyondan sensör verilerini almak
 
 `carla_sensor_package` ROS paketi, CARLA simülasyon ortamındaki sensörlere abone olma ve yayın yapma ile ilgili işlevleri içerir. Bu paketin içerisindeki `sensor_publisher` node'u, simülasyon ortamındaki sensörlerden veri alır ve bu verileri `carla_image`, `carla_lidar` ve `carla_radar` konularından ilgili olanlara yayınlar. Bu node aktif hale geldiğinde simülasyon ortamında önceden belirlenen sensörler oluşturulur ve bu sensörlerden alınan veriler yayınlanır. Bu node çalışmıyorsa, aşağıdaki komutla node'u başlatabilirsiniz:
@@ -12,8 +24,6 @@ Add to the dockerfile the following:
 ```bash
 ros2 run carla_sensor_package sensor_publisher --host xxx.xxx.xxx.xxx
 ```
-
-Burada `xxx.xxx.xxx.xxx`, CARLA serverinin IP adresidir. Eğer `--host` parametresi belirtilmezse, varsayılan olarak `localhost` kullanılır. Bu durumda CARLA simülasyonu ve ROS2 aynı bilgisayarda çalışıyor olmalıdır.
 
 Sensör verilerini terminalde görmek için şu komutu çalıştırabilirsiniz:
 
@@ -80,6 +90,14 @@ Burada:
 - traffic_light_id, CARLA simülatörü tarafından tanımlanan trafik ışığının kimliğidir.
 - traffic_light_state, trafik ışığının durumudur.
 - traffic_light_pose, trafik ışığının pozisyon ve yönelimini içeren bir geometry_msgs.msg.Pose mesajıdır. Sadece pozisyon ve yatay açı (yaw) önemli olduğundan, diğer yönelim değerleri sıfır olarak ayarlanmıştır.
+## Acil durum aracı oluşturma
+
+CARLA simülatöründe bir araç oluşturmak için `spawn_emergency_vehicle` nodeunu kullanmanız gerekir. Bu node, `carla_vehicle_spawner` paketinin bir parçasıdır. Bu node, CARLA simülatöründe acil durum aracı oluşturmanızı sağlar. Bu node çalışmıyorsa, aşağıdaki komutla node'u başlatabilirsiniz:
+
+```bash
+ ros2 run carla_vehicle_spawner spawn_emergency_vehicle --ros-args -p vehicle_type:='police' -p host:='xxx.xxx.xxx.xxx'
+```
+Bu komut bir polis aracı oluşturur. Ayrıca `vehicle_type` parametresini `firetruck` veya `ambulance` olarak değiştirerek itfaiye aracı veya ambulans oluşturabilirsiniz. Eğer parametre belirtilmezse, rastgele bir acil durum aracı oluşturulur.
 
 ## Spawning an emergency vehicle
 
