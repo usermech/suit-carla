@@ -97,39 +97,9 @@ CARLA simülatöründe bir araç oluşturmak için `spawn_emergency_vehicle` nod
 ```bash
  ros2 run carla_vehicle_spawner spawn_emergency_vehicle --ros-args -p vehicle_type:='police' -p host:='xxx.xxx.xxx.xxx'
 ```
-Bu komut bir polis aracı oluşturur. Ayrıca `vehicle_type` parametresini `firetruck` veya `ambulance` olarak değiştirerek itfaiye aracı veya ambulans oluşturabilirsiniz. Eğer parametre belirtilmezse, rastgele bir acil durum aracı oluşturulur.
 
-## Spawning an emergency vehicle
-
-To spawn a vehicle in CARLA simulator, you will need to use `/spawn_vehicle` service. 
-First you need to check if the service is available by running the following command:
+Bu komut bir polis aracı oluşturur. Ayrıca `vehicle_type` parametresini `firetruck` veya `ambulance` olarak değiştirerek itfaiye aracı veya ambulans oluşturabilirsiniz. Eğer parametre belirtilmezse, rastgele bir acil durum aracı oluşturulur. Eğer aşağıdakine benzer bir çıktı alırsanız, araç oluşturma işlemi başarısız olmuş demektir:
 
 ```bash
-ros2 service list | grep spawn_vehicle
+[INFO] [traffic_manager_node]: Spawn failed
 ```
-
-If this service is not available, you can start the service by running the following command:
-
-```bash
-ros2 run carla_vehicle_spawner spawn_vehicle_service --host xxx.xxx.xxx.xxx 
-```
-
-where `xxx.xxx.xxx.xxx` is the IP address of the CARLA simulator.
-
-After the service is available, you can spawn a vehicle by running the following command:
-
-```bash
-ros2 service call /spawn_vehicle carla_interface/srv/SpawnVehicle "{'vehicle_type': 'random'}"
-```
-
-This command will spawn a random emergency vehicle in the CARLA simulator. There are three types of vehicles that you can
-spawn: `firetruck`, `police`, and `ambulance`. You can specify the type of vehicle by changing the `vehicle_type` parameter in the command above.
-
-If the service call is successful, you will see the following message:
-
-```bash
-success: True
-message: "Spawned $vehicle_type with ID $vehicle_id."
-```
-
-Where `$vehicle_type` is the type of vehicle that you have spawned and `$vehicle_id` is the ID of the vehicle defined by CARLA simulator.
