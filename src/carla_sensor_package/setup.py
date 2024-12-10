@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'carla_sensor_publisher = carla_sensor_package.sensor_publisher:main',
-        ],
+            'carla_image_subscriber = carla_sensor_package.image_subscriber:main',
+            ],
     },
 )

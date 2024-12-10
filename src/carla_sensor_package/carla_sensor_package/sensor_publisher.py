@@ -119,15 +119,15 @@ def run_simulation(args, client, publisher, packages):
         
         for i in packages:
             # Spawn sensors
-            camera_transform = carla.Transform(carla.Location(x=-47,y=15, z=4),carla.Rotation(pitch=-15.0,yaw=-90.0+90*i))
+            camera_transform = carla.Transform(carla.Location(x=-47,y=22, z=4),carla.Rotation(pitch=-15.0,yaw=-90.0+90*i))
             camera_options = {'image_size_x': '640', 'image_size_y': '480'}
             sensor_manager = SensorManager(world, publisher, 'RGBCamera', camera_transform, camera_options,i)
             
-            lidar_transform = carla.Transform(carla.Location(x=-47,y=15, z=4),carla.Rotation(pitch=-15.0,yaw=-90.0+90*i))
+            lidar_transform = carla.Transform(carla.Location(x=-47,y=22, z=4),carla.Rotation(pitch=-15.0,yaw=-90.0+90*i))
             lidar_options = {'channels': '125', 'range': '200', 'points_per_second': '750000', 'rotation_frequency': '20','horizontal_fov':'120','upper_fov':'12.5','lower_fov':'-12.5'}
             SensorManager(world, publisher, 'LiDAR', lidar_transform, lidar_options,i)
             '''
-            radar_transform = carla.Transform(carla.Location(x=-47,y=15, z=4),carla.Rotation(pitch=-15.0,yaw=-90.0+90*i)
+            radar_transform = carla.Transform(carla.Location(x=-47,y=22, z=4),carla.Rotation(pitch=-15.0,yaw=-90.0+90*i)
             radar_options = {'horizontal_fov': '30', 'vertical_fov': '10'}
             SensorManager(world, publisher, 'Radar', radar_transform, radar_options,i)
             '''
@@ -160,8 +160,6 @@ def main():
     args = parser.parse_args()
     client = carla.Client(args.host, args.port)
     client.set_timeout(10.0)
-    for i in args.packages:
-        print(i)
     publisher = CarlaSensorPublisher(args.packages)
     run_simulation(args, client, publisher, args.packages)
     publisher.destroy_node()
