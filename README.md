@@ -19,21 +19,27 @@ Bu node çalıştığı zaman CARLA server zamanının kontrolünden sorumludur.
 
 ## Simülasyondan sensör verilerini almak
 
-`carla_sensor_package` ROS paketi, CARLA simülasyon ortamındaki sensörlere abone olma ve yayın yapma ile ilgili işlevleri içerir. Bu paketin içerisindeki `sensor_publisher` node'u, simülasyon ortamındaki sensörlerden veri alır ve bu verileri `carla_image`, `carla_lidar` ve `carla_radar` konularından ilgili olanlara yayınlar. Bu node aktif hale geldiğinde simülasyon ortamında önceden belirlenen sensörler oluşturulur ve bu sensörlerden alınan veriler yayınlanır. Bu node çalışmıyorsa, aşağıdaki komutla node'u başlatabilirsiniz:
+`carla_sensor_package` ROS paketi, CARLA simülasyon ortamındaki sensörlere abone olma ve yayın yapma ile ilgili işlevleri içerir. Bu paketin içerisindeki `sensor_publisher` node'u, simülasyon ortamındaki sensörlerden veri alır ve bu verileri `carla_image_0`, `carla_lidar_0` ve `carla_radar_0` konularından ilgili olanlara yayınlar. Senaryolar 4 taraflı bir kavşakta geçtiği için 4'e kadar istenilen sayıda sensör paketi oluşturulabilir. Her bir sensör paketinin verisi ayrı konu başlığına basılır. Bu node aktif hale geldiğinde simülasyon ortamında önceden belirlenen sensörler oluşturulur ve bu sensörlerden alınan veriler yayınlanır. Bu node çalışmıyorsa, aşağıdaki komutla node'u başlatabilirsiniz:
 
 ```bash
-ros2 run carla_sensor_package sensor_publisher --host xxx.xxx.xxx.xxx
+ros2 run carla_sensor_package sensor_publisher --host xxx.xxx.xxx.xxx --packages 0,2
 ```
+
+Burada `--packages` parametresi ile hangi sensör paketlerinin oluşturulacağı belirlenir. Bu parametrede virgülle ayrılmış bir şekilde sensör paketlerinin indeks numaraları belirtilmelidir. Örneğin, `--packages 0,2` parametresi ile 0 ve 2 numaralı sensör paketleri oluşturulur. Bu durumda `carla_image_0`, `carla_lidar_0`, `carla_radar_0` ve `carla_image_2`, `carla_lidar_2`, `carla_radar_2` konuları oluşturulur. Eğer parametre belirtilmezse, varsayılan olarak tüm sensör paketleri oluşturulur.
 
 Sensör verilerini terminalde görmek için şu komutu çalıştırabilirsiniz:
 
 ```bash
-ros2 topic echo /carla/image
-ros2 topic echo /carla/lidar
-ros2 topic echo /carla/radar
+ros2 topic echo /carla/image_0
+ros2 topic echo /carla/lidar_0
+ros2 topic echo /carla/radar_0
 ```
 
-ya da bir Python kodu kullanarak bu konuya abone olabilirsiniz. Bu paketin içinde örnek bir Python kodu da bulunmaktadır. Paket içerisindeki `image_subscriber.py` dosyasını çalıştırarak sensör verilerini görselleştirebilirsiniz.
+ya da bir Python kodu kullanarak bu konuya abone olabilirsiniz. Bu paketin içinde örnek bir Python kodu da bulunmaktadır. Paket içerisindeki `image_subscriber.py` dosyasını çalıştırarak sensör verilerini görselleştirebilirsiniz. Parametre olarak hangi sensör paketinden veri almak istediğinizi belirtmelisiniz. Örneğin, `0` numaralı sensör paketinden veri almak için aşağıdaki komutu çalıştırabilirsiniz:
+
+```bash
+ros2 run carla_sensor_package carla_image_subscriber --ros-args -p camera_id:=0
+```
 
 ## Yaya trafiği oluşturmak
 
@@ -90,6 +96,7 @@ Burada:
 - traffic_light_id, CARLA simülatörü tarafından tanımlanan trafik ışığının kimliğidir.
 - traffic_light_state, trafik ışığının durumudur.
 - traffic_light_pose, trafik ışığının pozisyon ve yönelimini içeren bir geometry_msgs.msg.Pose mesajıdır. Sadece pozisyon ve yatay açı (yaw) önemli olduğundan, diğer yönelim değerleri sıfır olarak ayarlanmıştır.
+
 ## Acil durum aracı oluşturma
 
 CARLA simülatöründe bir araç oluşturmak için `spawn_emergency_vehicle` nodeunu kullanmanız gerekir. Bu node, `carla_vehicle_spawner` paketinin bir parçasıdır. Bu node, CARLA simülatöründe acil durum aracı oluşturmanızı sağlar. Bu node çalışmıyorsa, aşağıdaki komutla node'u başlatabilirsiniz:
